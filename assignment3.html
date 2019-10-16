@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment 3</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <script src="scores.js" charset="utf-8"></script>
+
+
+
+    <style>
+
+
+    .Yaxis path,
+    .Yaxis line {
+        fill: none;
+        stroke: black;
+        stroke-width: 2px;
+        shape-rendering: crispEdges
+    }
+    .Yaxis text {
+        font-family: sans-serif;
+        font-size: 11px;
+    }
+
+        .Xaxis path,
+        .Xaxis line {
+            fill: none;
+            stroke: black;
+            stroke-width: 2px;
+            shape-rendering: crispEdges
+        }
+        .Xaxis text {
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+
+    </style>
+</head>
+<body>
+<h3>CMPS-3360 Assignment 3</h3>
+<span>Kyle Strougo</span>
+<br/>
+<hr/>
+
+<script>
+  var height = 450;
+  var width = 450;
+  var padding = 30;
+
+  var scoresLength = scores.length;
+  var minGPA = 4.0
+  for(i=0;i<scoresLength;++i){
+    console.log("loop")
+    if(scores[i].GPA < minGPA){minGPA = scores[i].GPA;}
+  }
+  console.log(minGPA)
+  var maxGPA = 0.0
+  for(i=0;i<scoresLength;++i){
+    console.log("loop")
+    if(scores[i].GPA > minGPA){maxGPA = scores[i].GPA;}
+  }
+  console.log(maxGPA)
+</script>
+
+<div id="D3Scatter2">
+    <h2>SATM / SATV</h2>
+    <svg id="Graph1" width="500" height="500">
+       <rect x="0" y="0" width="500" height="500" style="fill:white; stroke:black; stroke-width:3.5px"/>
+    </svg>
+
+    <script>
+
+    var svg = d3.select("#Graph1")
+    svg.selectAll("circle")
+      .data(scores)
+      .enter().append("circle")
+
+      .attr("cx", function(d,i) {
+        return padding + d.SATV/2})
+
+      .attr("cy",function(d,i) {
+        return 550 - d.SATM/2})
+
+      .attr("r",2.8)
+      .style("fill", "black")
+      .style("stroke","black");
+
+
+
+
+    var xScale = d3.scale.linear()
+        .domain([0, 800])
+        .range([0, 450])
+        .nice();
+
+    var yScale = d3.scale.linear()
+      .domain([800, 0])
+      .range([0, 450])
+      .nice();
+
+    var xAxis = d3.svg.axis();
+    xAxis.scale(xScale);
+    xAxis.orient("bottom");
+
+    var yAxis = d3.svg.axis();
+    yAxis.scale(yScale);
+    yAxis.orient("left");
+
+    svg.append("g")
+            .attr("class","Xaxis")
+            .attr("transform","translate(" + padding + "," + (height + padding) + ")")
+            .call(xAxis);
+
+    svg.append("g")
+        .attr("class","Yaxis")
+        .attr("transform","translate(" + padding + "," + padding + ")")
+        .call(yAxis);
+
+
+
+</script>
+
+<br>
+</br>
+
+      <h2>ACT / GPA</h2>
+      <svg id="Graph2" width="500" height="500">
+         <rect x="0" y="0" width="500" height="500" style="fill:white; stroke:black; stroke-width:3.5px"/>
+      </svg>
+      <script>
+
+      var svg = d3.select("#Graph2")
+      svg.selectAll("circle")
+        .data(scores)
+        .enter().append("circle")
+        .attr("cx", function(d,i) {
+          return padding + d.ACT*10})
+
+        .attr("cy",function(d,i) {
+          return  550 - d.GPA*100})
+
+        .attr("r",2.8)
+        .style("fill", "black")
+        .style("stroke","black")
+
+      var xScale = d3.scale.linear()
+          .domain([0, 35])
+          .range([0, 450])
+          .nice();
+
+      var yScale = d3.scale.linear()
+        .domain([4.0, 0])
+        .range([0, 450])
+        .nice();
+
+      var xAxis = d3.svg.axis();
+      xAxis.scale(xScale);
+      xAxis.orient("bottom");
+      var yAxis = d3.svg.axis();
+      yAxis.scale(yScale);
+      yAxis.orient("left");
+      svg.append("g")
+              .attr("class","Xaxis")
+              .attr("transform","translate(" + padding + "," + (height+padding) + ")")
+              .call(xAxis);
+      svg.append("g")
+          .attr("class","Yaxis")
+          .attr("transform","translate(" + padding + "," + padding + ")")
+          .call(yAxis);
+
+
+
+  </script>
+
+  <br>
+  </br>
+
+<h2>Student Information</h2>
+<svg id="T4" width="500" height="500">
+   <rect x="0" y="0" width="500" height="500" style="fill:white; stroke:black; stroke-width:3.5px"/>
+</svg>
+
+<script>
+
+
+
+
+</script>
+
+</div>
+</body>
+</html>
