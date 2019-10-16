@@ -1,0 +1,155 @@
+<style>
+	svg {
+		border: 1px solid black;
+		transform: rotateX(180deg);
+	}
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment 1</title>
+</head>
+<body>
+
+<h3>CMPS-3360 Assignment 1</h3>
+<span>Kyle Strougo</span>
+
+<br/>
+<hr/>
+<br/>
+
+<br/>
+
+<script> 
+	var data = [10,8,13,9,11,14,6,4,12,7,5];
+</script>
+
+
+
+<div>	 
+    <h2>1a. Bar Chart</h2>
+    <svg id="Bar" width="300" height="200"></svg>
+	 
+	 <!-- Here is how you'd set a background rectangle programmatically with javascript.  Useful but not necessary for this assignment -->
+	 <script>
+	 	 for (var i = 0; i < data.length; i++) {
+	 	 	
+		 var svg = document.getElementById("Bar");
+		 var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'rect'); //Create a path in SVG's namespace
+		 newElement.setAttribute("x", 0 + (i *30));
+		 newElement.setAttribute("y", 0 ); 
+		 newElement.setAttribute("width", 20);
+		 number = parseInt(data[i], 10);
+		 number = number * 10;
+		 newElement.setAttribute("height", number); 
+		 newElement.style.fill = "red"; //Set stroke colour
+		 newElement.style.stroke = "#000000"; //Set stroke colour
+		 newElement.style.strokeWidth = "1px"; //Set stroke width
+		 svg.appendChild(newElement);
+		 
+		 
+		 }
+	 </script>
+			 
+</div>
+
+<div>
+    <h2>1b. Line Chart</h2>
+
+    <svg id="Line" width="300" height="200"></svg>
+
+</div>
+
+<div>
+	<script src="scores.js" charset="utf-8"></script>    
+	
+	<script>
+	var increment = 0;
+	
+	for (var i = 0; i < data.length; i++) {
+	
+	var svg = document.getElementById("Line");
+	var newLine = document.createElementNS("http://www.w3.org/2000/svg",'line');
+	newLine.setAttribute("id",Line);
+	
+	newLine.setAttribute("x1",increment);
+	newLine.setAttribute("y1",data[i]*10);
+	increment = increment + 30;
+	newLine.setAttribute("x2", increment);
+	newLine.setAttribute("y2", data[i+1] *10);
+	
+	newLine.setAttribute("stroke", "black")
+	svg.append(newLine);
+	
+	
+	}
+	</script>
+	 
+	 <h2>2a. Scatterplot</h2>
+
+    <svg id="Scatter" width="650" height="550"></svg>
+    
+    <script>
+    
+    
+    var Scores_Len = scores.length;
+    var svg3 = document.getElementById("Scatter");
+    var newElement3 = document.createElementNS("http://www.w3.org/2000/svg", 'rect'); 
+    newElement3.setAttribute("x","0");
+    newElement3.setAttribute("y","0");
+    newElement3.setAttribute("width","700");
+    newElement3.setAttribute("height","700");
+    newElement3.style.fill = "none"; //Set stroke colour
+    newElement3.style.stroke = "#000000"; //Set stroke colour
+    newElement3.style.strokeWidth = "1px"; //Set stroke width
+    svg3.appendChild(newElement3);
+    
+    for(k=0; k < Scores_Len; ++k){
+      var gpa = scores[k].GPA;
+      var gpa_col;
+      if(gpa <= 2.25){
+        gpa_col = "brown";
+      } else if(gpa <= 2.5){
+        gpa_col = "darkred";
+      } else if(gpa <= 2.75){
+        gpa_col = "firebrick";
+      } else if(gpa <= 3.0){
+        gpa_col = "indianred";
+      } else if(gpa <= 3.25){
+        gpa_col = "lightsteelblue";
+      } else if(gpa <= 3.5){
+        gpa_col = "mediumslateblue";
+      } else if(gpa <= 3.75){
+        gpa_col = "mediumblue";
+      } else{
+        gpa_col = "mediumblue";
+      }
+      
+      b = ((((650 - 0)/(800 - 400)) * (scores[k].SATM - 400)))
+      
+      c = ((((550 - 0)/(800 - 320)) * (scores[k].SATV - 320)))
+      
+      var newCircle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+      newCircle.setAttribute("cx",b/1.15);
+      newCircle.setAttribute("cy",c/1.15);
+      newCircle.setAttribute("r",scores[k].ACT/3.6);
+      newCircle.style.fill = gpa_col; //Set stroke colour
+      newCircle.style.stroke = "#000000"; //Set stroke colour
+      newCircle.style.strokeWidth = "1px"; //Set stroke width
+      svg3.appendChild(newCircle);
+    }
+
+    </script>
+    
+</div>
+
+<div>
+    <h2>2b. Color Justification</h2>
+Regarding the color justification part, I chose to have different shades of color depending on the value. I chose different shades of brown to red to blue in increments of .25 starting at 2.25 up to 3.75. This gave a nice contrast in representing the variation between values. Visually this was nice since the data overlaps a ton in many areas. 
+
+    <h2>2c. Visualization Critique</h2>
+    Regarding visual critiques, there are definitely a few I had for my scatterplot. I also could've possible made the circles slightly smaller so that overlapping data can be seen. Also, of course it would be great if I had an axis to give the viewer a better idea on how to interpret thew data. In addition to an axis, it would be great to have all the necessary labels so that the user could know what they are looking at. 
+</div>
+</body>
+</html>

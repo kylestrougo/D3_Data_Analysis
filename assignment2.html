@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment 2</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8">
+
+    </script>
+    <style>
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        stroke-width: 1px;
+        shape-rendering: crispEdges
+    }
+    .axis text {
+        font-family: sans-serif;
+        font-size: 11px;
+    }
+    </style>
+
+    </script>
+</head>
+<body>
+
+<h3>CMPS-3360 Assignment 2</h3>
+<span>Kyle Strougo</span>
+
+<br/>
+<hr/>
+<br/>
+
+<br/>
+
+<script src="scores.js" charset="utf-8"></script>
+
+<!-- Rectangles hard-coded below are placeholders.  Remove. -->
+
+<div id="D3Scatter1">
+    <h2>1. Reproduce Scatter Plot in D3</h2>
+    <svg id="D3ScatterSVG" width="600" height="400">
+      <rect x="0" y="0" width="600" height="400" style="fill:white; stroke:black; stroke-width:1px"/>
+    </svg>
+
+    <script>
+      var svg = d3.select("#D3ScatterSVG")
+      var xScale = d3.scale.linear()
+        .domain([370,800])
+        .range([10, 590]);
+      var yScale = d3.scale.linear()
+        .domain([280,800])
+        .range([10,390]);
+      var rScale = d3.scale.linear()
+        .domain([15, 35])
+        .range([2, 10]);
+      svg.selectAll("circle")
+        .data(scores)
+        .enter().append("circle")
+        .attr("cx", function(d) { return xScale(d['SATM'])})
+        .attr("cy", function(d) { return 400-yScale(d['SATV'])})
+        .attr("r", function(d) { return rScale(d['ACT'])})
+        .style("fill", function(d) {
+          if(d['GPA'] <= 2.25){
+      return "brown";
+    } else if(d['GPA'] <= 2.5){
+      return "darkred";
+    } else if(d['GPA'] <= 2.75){
+      return "firebrick";
+    } else if(d['GPA'] <= 3.0){
+      return"indianred";
+    } else if(d['GPA'] <= 3.25){
+      return "lightsteelblue";
+    } else if(d['GPA'] <= 3.5){
+      return "mediumslateblue";
+    } else if(d['GPA'] <= 3.75){
+      return "mediumblue";
+    } else{
+      return "mediumblue";
+    }
+        })
+
+    </script>
+
+</div>
+
+<div id="D3Scatter2">
+    <h2>2-4. Color</h2>
+<svg id="ScatterTwo" width="500" height="500">
+       <rect x="0" y="0" width="500" height="500" style="fill:white; stroke:black; stroke-width:1px"/>
+    </svg>
+    <script>
+  var GPAmin = 5.0
+  for(i=0;i<scores.length;++i){
+    if(scores[i].GPA < GPAmin){
+      GPAmin = scores[i].GPA;
+    }
+  }
+  var GPAmax = 0.0
+  for(i=0;i<scores.length;++i){
+    if(scores[i].GPA > GPAmax){
+      GPAmax = scores[i].GPA;
+    }
+  }
+
+  var midGPA = ((GPAmin + GPAmax)/2)
+    // Colors
+var RG = d3.scale.linear()
+            .domain([GPAmin, GPAmax])
+            .range(["red", "green"]);
+  var GBNU3 = d3.scale.linear()
+            .domain([GPAmin, midGPA, GPAmax])
+            .range([d3.rgb(224,243,219),d3.rgb(168,221,181),d3.rgb(67,162,202)]);
+ var GBNU5 = d3.scale.quantize()
+            .domain([GPAmin, GPAmax])
+            .range([d3.rgb(240,249,232),d3.rgb(186,228,188),d3.rgb(123,204,196),d3.rgb(67,162,202),d3.rgb(8,104,172)]);
+    var svg = d3.select("#ScatterTwo")
+    svg.selectAll("circle")
+  .data(scores)
+      .enter().append("circle")
+        .attr("cx", function(d) {
+            return d.SATV/2
+            })
+        .attr("cy",function(d) {
+            return 450 - d.SATM/2
+            })
+        .attr("r",function(d) {
+            return d.ACT*.25
+            })
+      .style("fill", function (d){
+          // here we apply the color scale
+          return RG(d.GPA);
+      })
+
+    var svg = d3.select("#ScatterTwo")
+    var padding = 30;
+    var width = 450;
+    var height = 450;
+     var xScale = d3.scale.linear()
+
+
+        .domain([0, 800])
+        .range([0, 450])
+        // make the ranges nice
+        .nice();
+    var yScale = d3.scale.linear()
+      .domain([800, 0])
+      .range([0, 450])
+      // make the ranges nice
+      .nice();
+    var xAxis = d3.svg.axis();
+    xAxis.scale(xScale);
+    xAxis.orient("bottom");
+    var yAxis = d3.svg.axis();
+    yAxis.scale(yScale);
+    yAxis.orient("left");
+    svg.append("g")
+            // css class for the axis
+            .classed("axis", true)
+            // moving the axis to the right place
+            .attr("transform","translate(" + padding + "," + (height+padding) + ")")
+            .call(xAxis);
+    svg.append("g")
+        // css class for the axis
+        .classed("axis", true)
+        // moving the axis to the right place
+        .attr("transform","translate(" + padding + "," + padding + ")")
+        .call(yAxis);
+ var svg = d3.select("#ScatterTwo")
+    var svg = d3.select("#ScatterTwo")
+    svg.selectAll("circle")
+      .data(scores)
+      .enter().append("circle")
+      .attr("cx", function(d) {
+          return padding + d.SATV/3
+          })
+      .attr("cy",function(d) {
+          return 300 - d.SATM/3
+          })
+      .attr("r",function(d) {
+          return d.ACT*.25
+          })
+      .attr("fill", function (d){
+          // here we apply the color scale
+          return RG(d.GPA);
+      })
+
+ var execute = function(integer) {
+      var svg = d3.select("#ScatterTwo")
+        svg.selectAll("circle")
+          .transition().duration(700)
+          .style("fill", function (d){
+              if(integer==2){
+                return RG(d.GPA);
+              }
+              else if(integer==3){
+                return GBNU3(d.GPA);
+              }
+              else if(integer==5){
+                return GBNU5(d.GPA);
+              }
+          })
+    }
+    function SATandSATM(){
+              var svg = d3.select("#ScatterTwo")
+               var rexScale = d3.scale.linear()
+            .domain([0, 1600])
+            .range([0, 450])
+            // make the ranges nice
+            .nice();
+        var rexAxis = d3.svg.axis();
+        rexAxis.scale(rexScale);
+        rexAxis.orient("bottom");
+        svg.selectAll(".axis").remove();
+        svg.append("g")
+            // css class for the axis
+            .classed("axis", true)
+            // moving the axis to the right place
+            .attr("transform","translate(" + padding + "," + (height+padding) + ")")
+            .call(rexAxis);
+        svg.append("g")
+            // css class for the axis
+            .classed("axis", true)
+            // moving the axis to the right place
+            .attr("transform","translate(" + padding + "," + padding + ")")
+            .call(yAxis);
+        svg
+          .transition().duration(500)
+          .selectAll("circle")
+            .attr("cx", function(d) {return padding + (d.SATV + d.SATM)/4})
+    }
+</script>
+</div>
+<div id = "buttons">
+  <button id="RedGreen">Red Green</button>
+  <button id="Blue1">Blue 1</button>
+  <button id="Blue2">Blue 2</button>
+  <button id="Trans">Change Horizontal Axis</button>
+
+  <script>
+    d3.select("#RedGreen").on("click", function () {
+        execute(2);});
+    d3.select("#Blue1").on("click", function () {
+        execute(3);});
+    d3.select("#Blue2").on("click", function () {
+        execute(5);});
+    d3.select("#Trans").on("click", function () {
+        SATandSATM();
+    });
+
+
+
+    </script>
+</div>
+</body>
+</html>
