@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment 3</title>
+
+    <script src="scores.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+
+
+
+    <style>
+
+
+        .Yaxis path,
+        .Yaxis line {
+            fill: none;
+            stroke: black;
+            stroke-width: 2px;
+            shape-rendering: crispEdges
+        }
+        .Yaxis text {
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+
+            .Xaxis path,
+            .Xaxis line {
+                fill: none;
+                stroke: black;
+                stroke-width: 2px;
+                shape-rendering: crispEdges
+            }
+            .Xaxis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+
+
+            .selection {
+          stroke          : gray;
+          stroke-width    : 1.5px;
+          stroke-dasharray: 4px;
+          stroke-opacity  : 0.5;
+          fill            : transparent;
+
+        }
+
+    </style>
+</head>
+<body>
+
+<h3>CMPS-3360 Assignment 3</h3>
+<span>Kyle Strougo</span>
+
+<br/>
+<hr/>
+
+
+<script>
+  var height = 450;
+  var width = 450;
+  var padding = 30;
+  var radius = 2.8;
+  //-------------------
+
+  var scoresLength = scores.length;
+  var minGPA = 4.0
+  for(i=0;i<scoresLength;++i){
+    console.log("loop")
+    if(scores[i].GPA < minGPA){minGPA = scores[i].GPA;}
+  }
+
+  //-------------------
+
+  console.log(minGPA)
+  var maxGPA = 0.0
+  for(i=0;i<scoresLength;++i){
+    console.log("loop")
+    if(scores[i].GPA > minGPA){maxGPA = scores[i].GPA;}
+  }
+  console.log(maxGPA)
+
+</script>
+
+<div id="D3Scatter2">
+
+
+  <h2>SATM / SATV</h2>
+  <svg id="Graph1" width="500" height="500">
+     <rect x="0" y="0" width="500" height="500" style="fill:white; stroke:black; stroke-width:3.5px"/>
+  </svg>
+
+
+    <h2>ACT / GPA</h2>
+    <svg id="Graph2" width="500" height="500">
+       <rect x="0" y="0" width="500" height="500" style="fill:white; stroke:black; stroke-width:3.5px"/>
+    </svg>
+
+    <script>
+
+
+      //--------------  Graph 1  --------------------
+
+    var svg = d3.select("#Graph1")
+
+
+    var sat_brush = d3.brush()
+      .extent([[0,0],[width+2*padding,height+2*padding]])
+      .on("start", brush_reset)
+      .on("brush", sat_set)
+
+    var sat_select = svg.append("g")
+      .attr("class","brush")
+      .call(sat_brush)
+
+    var sat_points = svg.selectAll("circle")
+      .data(scores)
+      .enter().append("circle")
+      .attr("id",function(d,i){
+        return "SAT" + i
+      })
+      .attr("cx", function(d,i) {
+        return padding + d.SATV/2})
+
+      .attr("cy",function(d,i) {
+        return 550 - d.SATM/2})
+
+      .attr("r",radius)
+      .style("fill", "black")
+      .style("stroke","black")
+
+      .on("click", function(d,i){
+
+        sat_select.node().__brush.selection = null;
+        sat_select.call(sat_brush)
+        selection_act.node().__brush.selection = null;
+        selection_act.call(brush_act)
+
+        var clear_obj = document.getElementById('one_student');
+        if(clear_obj!= null){
+          clear_obj.parentNode.removeChild(clear_obj);
+        }
+        sat_points.attr("r",radius)
+        act_points.attr("r",radius)
+        act_points.style("fill","black")
+        sat_points.style("fill","gray")
+        d3.select(this).style("fill","red")
+        var corr_circle = "#ACT" + i;
+        svg2.select(corr_circle).attr("r",radius*3)
+
+  //-------------------
+
+        var obj = document.createElement("P");
+        var text = document.createTextNode("Student #: " + i  + ",  SATM: " + d.SATM + ",  SATV: " + d.SATV + ",  ACT: " + d.ACT + ",  GPA: " + d.GPA + " ");
+        obj.setAttribute('id', 'one_student');
+        obj.appendChild(text);
+        document.body.appendChild(obj);
+      })
+    var xScale = d3.scaleLinear()
+
+        .domain([0, 800])
+        .range([0, 450])
+        .nice();
+
+    var yScale = d3.scaleLinear()
+
+      .domain([800, 0])
+      .range([0, 450])
+      .nice();
+
+    var xAxis = d3.axisBottom();
+    xAxis.scale(xScale);
+    var yAxis = d3.axisLeft();
+    yAxis.scale(yScale);
+
+    svg.append("g")
+            .attr("class","Xaxis")
+            .attr("transform","translate(" + padding + "," + (height + padding) + ")")
+            .call(xAxis);
+
+    svg.append("g")
+        .attr("class","Yaxis")
+        .attr("transform","translate(" + padding + "," + padding + ")")
+        .call(yAxis);
+
+
+      //--------------  Graph2  --------------------
+
+    var svg2 = d3.select("#Graph2")
+    var brush_act = d3.brush()
+      .extent([[0,0],[width+2*padding,height+2*padding]])
+      .on("start",brush_reset)
+      .on("brush", act_set)
+
+    var selection_act = svg2.append("g")
+      .attr("class","brush")
+      .call(brush_act)
+
+    var act_points = svg2.selectAll("circle")
+      .data(scores)
+      .enter().append("circle")
+      .attr("id",function(d,i){
+        return "ACT" + i
+      })
+      .attr("cx", function(d,i) {
+        return padding + d.ACT*10})
+
+      .attr("cy",function(d,i) {
+        return  550 - d.GPA*100})
+      .attr("r",radius)
+      .style("fill", "black")
+      .style("stroke","black")
+      .on("click", function(d,i){
+        sat_select.node().__brush.selection = null;
+        sat_select.call(sat_brush)
+        selection_act.node().__brush.selection = null;
+        selection_act.call(brush_act)
+        var clear_obj = document.getElementById('one_student');
+        if(clear_obj!= null){
+          clear_obj.parentNode.removeChild(clear_obj);
+        }
+        sat_points.attr("r",radius)
+        act_points.attr("r",radius)
+        sat_points.style("fill","black")
+        act_points.style("fill","gray")
+        d3.select(this).style("fill","red")
+        var corr_circle = "#SAT" + i;
+        svg.select(corr_circle).attr("r",radius*3)
+        var obj = document.createElement("P");
+        var text = document.createTextNode("Student #: " + i  + ",  SATM: " + d.SATM + ",  SATV: " + d.SATV + ",  ACT: " + d.ACT + ",  GPA: " + d.GPA + " ");
+        obj.setAttribute('id', 'one_student');
+        obj.appendChild(text);
+        document.body.appendChild(obj);
+      })
+
+
+    var xScale = d3.scaleLinear()
+
+        .domain([0, 35])
+        .range([0, 450])
+        .nice();
+
+    var yScale = d3.scaleLinear()
+
+      .domain([4.0, 0])
+      .range([0, 450])
+      .nice();
+
+    var xAxis = d3.axisBottom();
+    xAxis.scale(xScale);
+    var yAxis = d3.axisLeft();
+    yAxis.scale(yScale);
+
+    svg2.append("g")
+            .attr("class","Xaxis")
+            .attr("transform","translate(" + padding + "," + (height+padding) + ")")
+            .call(xAxis);
+    svg2.append("g")
+        .attr("class","Yaxis")
+        .attr("transform","translate(" + padding + "," + padding + ")")
+        .call(yAxis);
+
+
+    //---------------Functions-------------------
+
+
+
+
+    function sat_set() {
+      var region = d3.event.selection
+      sat_points.attr("r",radius)
+      act_points.attr("r",radius)
+      sat_points.style("fill",function(d,i){
+        if(color(region, padding + d.SATV/2, 550 - d.SATM/2) == true){
+          var corr_circle = "#ACT" + i;
+          svg2.select(corr_circle).attr("r",radius*2)
+          return "red"
+        }
+        else{
+          return "gray"
+        }
+      })
+    }
+
+      //-------------------
+    function act_set() {
+      var region = d3.event.selection
+      sat_points.attr("r",radius)
+      act_points.attr("r",radius)
+      act_points.style("fill",function(d,i){
+        if(color(region, padding + d.ACT*10, 550 - d.GPA*100) == true){
+          var corr_circle = "#SAT" + i;
+          svg.select(corr_circle).attr("r",radius*2)
+          return "red"
+        }
+        else{
+          return "gray"
+        }
+      })
+    }
+      //-------------------
+
+ function color(region,cx,cy){
+    selection = region[0][0] <= cx && region[1][0] >= cx && region[0][1] <= cy && region[1][1] >= cy
+    return selection
+  }
+
+//--------------------
+
+function brush_reset(){
+
+  sat_select.node().__brush.selection = null;
+  sat_select.call(sat_brush)
+  selection_act.node().__brush.selection = null;
+  selection_act.call(brush_act)
+
+  sat_points.style("fill","black")
+  act_points.style("fill","black")
+  sat_points.attr("r",radius)
+  act_points.attr("r",radius)
+  var clear_obj = document.getElementById('one_student');
+  if(clear_obj!= null){
+    clear_obj.parentNode.removeChild(clear_obj);
+
+  }
+}
+
+  </script>
+</div>
+
+
+<h2>Student Information:</h2>
+
+</body>
+</html>
